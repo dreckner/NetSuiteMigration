@@ -1,1 +1,69 @@
-# Netsuite Order to Payments Notes
+#!markdown
+
+# NetSuite Migration 
+## Day 0
+> Goal: replicate existing data flows and processes to ensure testable functionality
+### Dataflows
+* Revenue Account List
+    * Reference List for Invoicing
+    * sync by vbs call to sql stored procedure
+* Customer List
+    * Reference List for Invoicing
+    * sync by vbs call to sql stored procedure
+* Employee List
+    * Reference List for Time Sheet
+    * sync by vbs call to sql stored procedure
+* Project
+    * Web grid selects jobs for export
+    * Generates Import files
+    * A/R person loads import files into MS Dynamics SL Import tool
+    * A/R person clicks a sync button, writes imported job numbers to sync list
+
+* Invoice
+    * Web grid selects invoices for export
+    * Drop down list selects period to post
+    * A/R person generates export file
+    * A/R person loads export file into MS Dynamics SL Import Tool
+    * A/R person clicks on sync button, writes imported invoice numbers to sync list
+
+* Time Sheet
+    * Payroll person uses Payroll Mangler to identify, correct payroll batches
+    * Payroll person posts batches to Ascentis via API
+    * Upon receipt of success, time id is written to database sync table
+* Revenue Recognition
+    * No Final Invoice Report
+        > looks at all jobs that were started before the end date but do not have a final invoice [as defined withing the Invoice]  Exported as a spreadsheet        
+        * parameters
+            * period to post
+            * starting job number
+            * ending data
+        * output
+            * jobnumber
+            * client id
+            * brand
+            * job name
+            * location
+            * manager
+            * start date
+            * end date
+            * invoice numbers
+            * reckner income
+            * subcontractor income
+            * honoraria
+            * total
+            * percentage complete
+            * work in progress
+            * billed
+            * accrual
+        * process
+            * reckner income * percentage complete
+            * subcontractor income - subcontractor expenses
+            * honoraria income - honoraria expense
+* Reports
+    * Balance Sheet
+    * Profit & Loss
+    * Cashflow git
+    * Rev, Sales, Invoicing and Backlog
+    * Headcount By Department
+    * Margin Report
+    * Sales Target Report
